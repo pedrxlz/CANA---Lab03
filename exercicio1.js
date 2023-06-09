@@ -2,8 +2,6 @@
 
 // Algoritmos de Ordenação
 
-const arr = [5, 3, 2, 4, 7, 1, 0, 6];
-
 // BubbleSort
 
 const bubbleSort = (vetor) => {
@@ -21,8 +19,6 @@ const bubbleSort = (vetor) => {
   }
   return vetor;
 };
-
-bubbleSort(arr);
 
 // SelectionSort
 
