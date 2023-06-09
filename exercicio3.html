@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  </head>
+  <body>
+    <script>
+      function setup() {
+        const boardSize = 8;
+        const squareSize = 50;
+
+        const board = Array.from({ length: boardSize }, () =>
+          Array(boardSize).fill(-1)
+        );
+
+        const moves = [
+          [2, 1],
+          [1, 2],
+          [-1, 2],
+          [-2, 1],
+          [-2, -1],
+          [-1, -2],
+          [1, -2],
+          [2, -1],
+        ];
+
+        const isValidMove = (x, y) => {
+          return (
+            x >= 0 &&
+            x < boardSize &&
+            y >= 0 &&
+            y < boardSize &&
+            board[x][y] === -1
+          );
+        };
+
+        const drawBoard = () => {
+          for (let row = 0; row < boardSize; row++) {
+            for (let col = 0; col < boardSize; col++) {
+              const x = col * squareSize;
+              const y = row * squareSize;
+
+              if ((row + col) % 2 === 0) {
+                fill(255);
+              } else {
+                fill(100);
+              }
+
+              rect(x, y, squareSize, squareSize);
+            }
+          }
+        };
+
+        const drawKnight = (x, y) => {
+          const knightSize = squareSize * 0.8;
+          const xOffset = squareSize * 0.1;
+          const yOffset = squareSize * 0.1;
+
+          fill(255, 0, 0);
+          ellipse(
+            x * squareSize + squareSize / 2,
+            y * squareSize + squareSize / 2,
+            knightSize,
+            knightSize
+          );
+        };
+
+        const knightTour = (x, y, moveCount) => {
+          board[x][y] = moveCount;
+
+          drawBoard();
+          drawKnight(x, y);
+
+          return new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
+            if (moveCount === boardSize * boardSize) {
+              return true;
+            }
+
+            for (let [dx, dy] of moves) {
+              const nextX = x + dx;
+              const nextY = y + dy;
+
+              if (isValidMove(nextX, nextY)) {
+                if (knightTour(nextX, nextY, moveCount + 1)) {
+                  return true;
+                }
+              }
+            }
+
+            board[x][y] = -1;
+            return false;
+          });
+        };
+
+        createCanvas(boardSize * squareSize, boardSize * squareSize);
+
+        knightTour(0, 0, 1);
+      }
+
+      setup();
+    </script>
+  </body>
+</html>
